@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<body class="bg-black bg-opacity-75">
+<div class="col-md-6 offset-md-3">
+
+</br>
+
+<form method="POST" action="{% url 'add_application' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+        
+    <div class="card">
+        <div class="card-header">
+            <h1>Add Application</h1>
+        </div>
+        <div class="card-body">
+            {{ form.as_p }}
+       
+    </br>
+            <button type="submit" class="btn btn-secondary">Add application</button>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+</form>
+</div>
+</body>
+{% endblock%}

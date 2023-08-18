@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<body class="bg-black bg-opacity-75">
+<div class="card">
+    <div class="card-header"><strong>
+          {{ customer_application.first_name }} 
+          {{ customer_application.last_name }}</strong>
+    </div>
+    <div class="card-body">
+        <div class="card-content">
+            <p class="card-text">
+                <strong>Title: </strong></br>{{ customer_application.title }}</p>
+
+            <p class="card-text">
+                <strong>Email: </strong></br>{{ customer_application.email }}</p>
+  
+            <p class="card-text">
+                <strong>Phone: </strong></br>{{ customer_application.phone }}
+            </p>
+  
+            <p class="card-text">
+                <strong>City: </strong></br>{{ customer_application.city }}</p>
+
+            <p class="card-text">
+                <strong>Date Listed: </strong></br>{{ customer_application.created_at }}</p>
+  
+            <p class="card-text">
+                <strong>Applicant ID: </strong></br>{{ customer_application.id }}</p>
+        </div>
+        {% if customer_application.photo %}
+        <div class="image-container">
+            <img src="{{ customer_application.photo.url }}" width="500">
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+</br></br>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+  
+<a href="{% url 'delete_application' customer_application.id %}" class="btn btn-danger">Delete</a>
+  
+<a href="{% url 'update_application' customer_application.id %}" class="btn btn-secondary">Update Application</a>
+    
+</br>
+
+{% if application.photo %}
+{{ application.photo}}
+{% endif %}
+    
+</body>
+
+<style>
+    .card-body {
+        display: flex;
+        align-items: center;
+        
+    }
+
+    .card-content {
+        flex: 1;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+</style>
+
+{% endblock %}

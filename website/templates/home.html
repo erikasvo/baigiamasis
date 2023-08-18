@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+{% if user.is_authenticated %}
+
+
+
+<body class="bg-black bg-opacity-75">
+
+<div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+  {% for image in image_list %}
+  <img class="image" src="{{ image }}" draggable="false">
+  {% endfor %}
+
+  <style>
+    body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0rem;
+      overflow-x: hidden;
+      user-select: none;
+    }
+    .image {
+      width: 40vmin;
+      height: 56vmin;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 10px;
+    }
+    #image-track {
+      display: flex;
+      gap: 4vmin;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(0%, -50%);
+    }
+    table {
+      margin-top: 80vmin;
+
+    }
+    
+  </style>
+  
+</div>
+<script>
+  const track = document.getElementById("image-track");
+
+  window.onmousedown = e => {
+    track.dataset.mouseDownAt = e.clientX;
+  
+  window.onmousemove = e => {
+    if(track.dataset.mouseDownAt === "0") return;
+    const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
+          maxDelta = window.innerWidth / 2;
+
+    const percentage = (mouseDelta / maxDelta) * -100,
+          nextPercentage = parseFloat(track.dataset.prevPercentage) + percentage;
+
+    Math.min(nextPercentage, 0);
+    Math.max(nextPercentage, -100);
+          
+    track.dataset.percentage = nextPercentage;      
+    
+    track.animate({
+      transform: `translate(${nextPercentage}%, -50%)`
+    }, {duration: 1200, fill: "forwards"});
+
+    for(const image of track.getElementsByClassName("image")) {
+    image.animate ({
+      objectPosition: `${100 + nextPercentage}% center`
+    }, {duration: 1200, fill: "forwards"});
+
+  }
+    
+  }
+  window.onmouseup = () => {
+    track.dataset.mouseDownAt = "0";
+    track.dataset.prevPercentage = track.dataset.percentage;
+    }
+  }
+ 
+</script>
+
+<table class="table table-hover table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">City</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Title</th>
+        <th scope="col">Years of Experience</th>
+        <th scope="col">Date Listed</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% if workers %}
+    {% for worker in workers %}
+    <tr>
+       <td>{{ worker.first_name}}
+        {{ worker.last_name}}</td>
+        <td>{{ worker.email}}</td>
+        <td>{{ worker.city}}</td>
+        <td>{{ worker.phone}}</td>
+        <td>{{ worker.title}}</td>
+        <td>{{ worker.experience}}</td>
+        <td>{{ worker.created_at}}</td>
+        <td><a href="{% url 'application' worker.id %}" class="btn btn-danger">View Application</a></td>
+        
+        </tr>
+        
+    {% endfor %}
+    </tbody>
+    </table>
+
+{% endif %}
+
+</body>
+
+{% else %}
+<body class="bg-black bg-opacity-75">
+  
+
+<div class="col-md-6 offset-md-3 "></div>
+<br/>
+
+<div class="card">
+  <div class="card-header">
+    <strong>Login</strong>
+  </div>
+  <div class="card-body">
+    <form method="POST" action="{% url 'home' %}">
+      {% csrf_token %}
+      <form>
+          <div class="mb-3">
+            <input type="text" class="form-control"
+            name ="username", placeholder="Username" required>
+          </div>
+          <div class="mb-3">
+            <input type="password" class="form-control" name ="password", placeholder="Password" required>
+          </div>
+          <button type="submit" class="btn btn-secondary">Login</button>
+        </form>
+  
+  
+  </form>
+  </div>
+</div>
+
+
+</body>
+
+{% endif %}
+
+
+{% endblock%}
